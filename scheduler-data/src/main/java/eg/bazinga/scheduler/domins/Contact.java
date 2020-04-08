@@ -1,40 +1,21 @@
 package eg.bazinga.scheduler.domins;
 
 import eg.bazinga.scheduler.domins.enums.ContactType;
+import lombok.Getter;
+import lombok.Setter;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
+import javax.persistence.*;
 
+@Entity
+@Table(name = "CONTACTS")
+@Getter
+@Setter
 public class Contact extends Person {
 
-    private String title;
+    @Column(name = "JOB_TITLE")
+    private String jobTitle;
 
     @Enumerated(value = EnumType.STRING)
     private ContactType contactType;
 
-    private SystemUser systemUser;
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public ContactType getContactType() {
-        return contactType;
-    }
-
-    public void setContactType(ContactType contactType) {
-        this.contactType = contactType;
-    }
-
-    public SystemUser getSystemUser() {
-        return systemUser;
-    }
-
-    public void setSystemUser(SystemUser systemUser) {
-        this.systemUser = systemUser;
-    }
 }

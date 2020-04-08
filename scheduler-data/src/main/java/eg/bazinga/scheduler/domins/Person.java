@@ -1,61 +1,36 @@
 package eg.bazinga.scheduler.domins;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.Column;
+import javax.persistence.JoinColumn;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.OneToOne;
+
+@MappedSuperclass
+@Getter
+@Setter
 public class Person extends BaseEntity {
 
+    @Column(name = "NAME")
     private String name;
+
+    @Column(name = "EMAIL_ADDRESS")
     private String emailAddress;
+
+    @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
+
+    @Column(name = "IS_ACTIVE")
     private boolean active;
 
-    private Unit unitType;
+    @OneToOne
+    @JoinColumn(name = "UNIT_ID")
+    private UnitType unitType;
 
-    private Unit subUnitType;
+    @OneToOne
+    @JoinColumn(name = "SUB_UNIT_ID")
+    private SubUnitType subUnitType;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public boolean isActive() {
-        return active;
-    }
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
-
-    public Unit getUnitType() {
-        return unitType;
-    }
-
-    public void setUnitType(Unit unitType) {
-        this.unitType = unitType;
-    }
-
-    public Unit getSubUnitType() {
-        return subUnitType;
-    }
-
-    public void setSubUnitType(Unit subUnitType) {
-        this.subUnitType = subUnitType;
-    }
 }

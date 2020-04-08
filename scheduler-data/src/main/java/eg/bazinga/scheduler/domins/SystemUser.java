@@ -1,51 +1,30 @@
 package eg.bazinga.scheduler.domins;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "SE_USERS")
+@Getter
+@Setter
 public class SystemUser extends Person {
 
+    @Column(name = "USER_NAME")
     private String username;
+
+    @Column(name = "PASSWORD")
     private char[] password;
+
+    @Column(name = "CURRENT_VIEW")
     private String currentView;
+
+    @Column(name = "LAST_VIEW_OWNER_ID")
     private Long lastViewOwnerId;
 
+    @OneToOne
+    @JoinColumn(name = "CONTACT_ID")
     private Contact contact;
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public char[] getPassword() {
-        return password;
-    }
-
-    public void setPassword(char[] password) {
-        this.password = password;
-    }
-
-    public String getCurrentView() {
-        return currentView;
-    }
-
-    public void setCurrentView(String currentView) {
-        this.currentView = currentView;
-    }
-
-    public Long getLastViewOwnerId() {
-        return lastViewOwnerId;
-    }
-
-    public void setLastViewOwnerId(Long lastViewOwnerId) {
-        this.lastViewOwnerId = lastViewOwnerId;
-    }
-
-    public Contact getContact() {
-        return contact;
-    }
-
-    public void setContact(Contact contact) {
-        this.contact = contact;
-    }
 }
