@@ -1,4 +1,4 @@
-package eg.bazinga.scheduler.domin;
+package eg.bazinga.scheduler.domins;
 
 import org.springframework.format.annotation.DateTimeFormat;
 

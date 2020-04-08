@@ -1,4 +1,4 @@
-package eg.bazinga.scheduler.domin.enums;
+package eg.bazinga.scheduler.domins.enums;
 
 public enum Priority {
     HIGH, MIDDLE, LOW

@@ -1,6 +1,6 @@
-package eg.bazinga.scheduler.domin;
+package eg.bazinga.scheduler.domins;
 
-import eg.bazinga.scheduler.domin.enums.ContactType;
+import eg.bazinga.scheduler.domins.enums.ContactType;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
