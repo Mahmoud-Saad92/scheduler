@@ -1,2 +1,2 @@
-# scheduler
+# Scheduler
 Appointments Management Application
