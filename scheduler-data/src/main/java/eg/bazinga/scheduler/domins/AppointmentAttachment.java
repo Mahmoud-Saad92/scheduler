@@ -7,13 +7,13 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "SUB_UNITS")
+@Table(name = "APPOINTMENT_ATTACHMENTS")
 @Getter
 @Setter
-public class SubUnitType extends Unit implements Serializable {
+public class AppointmentAttachment extends BaseEntity implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "UNIT_ID")
-    private UnitType unitType;
+    @JoinColumn(name = "APPOINTMENT_ID")
+    private Appointment appointment;
 
 }

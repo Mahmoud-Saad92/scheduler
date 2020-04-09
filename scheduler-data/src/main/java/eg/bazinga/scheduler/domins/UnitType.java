@@ -7,23 +7,16 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
+import java.io.Serializable;
 import java.util.Set;
 
 @Entity
 @Table(name = "UNITS")
 @Getter
 @Setter
-public class UnitType extends Unit {
+public class UnitType extends Unit implements Serializable {
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "unitType")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "unitType", orphanRemoval = true)
     private Set<SubUnitType> subUnitTypes;
-
-    public Set<SubUnitType> getSubUnitTypes() {
-        if (subUnitTypes == null) {
-            subUnitTypes = new HashSet<>();
-        }
-        return subUnitTypes;
-    }
 
 }

@@ -4,12 +4,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "SE_USERS")
 @Getter
 @Setter
-public class SystemUser extends Person {
+public class SystemUser extends Person implements Serializable {
 
     @Column(name = "USER_NAME")
     private String username;
