@@ -1,23 +1,24 @@
 package eg.bazinga.scheduler.bootstrap;
 
-import eg.bazinga.scheduler.domins.Contact;
-import eg.bazinga.scheduler.domins.SubUnitType;
-import eg.bazinga.scheduler.domins.SystemUser;
-import eg.bazinga.scheduler.domins.UnitType;
+import eg.bazinga.scheduler.domins.*;
 import eg.bazinga.scheduler.domins.enums.ContactType;
+import eg.bazinga.scheduler.domins.enums.ERole;
 import eg.bazinga.scheduler.domins.enums.Type;
 import eg.bazinga.scheduler.services.appointment.AppointmentService;
 import eg.bazinga.scheduler.services.appointment.attachment.AppointmentAttachmentService;
 import eg.bazinga.scheduler.services.appointment.attendee.AppointmentAttendeeService;
 import eg.bazinga.scheduler.services.contact.ContactService;
+import eg.bazinga.scheduler.services.role.RoleService;
 import eg.bazinga.scheduler.services.sub.unit.type.SubUnitTypeService;
 import eg.bazinga.scheduler.services.unit.type.UnitTypeService;
 import eg.bazinga.scheduler.services.user.SystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -26,6 +27,8 @@ public class DataLoader implements CommandLineRunner {
     private SubUnitTypeService subUnitTypeServiceImpl;
     private SystemUserService systemUserServiceImpl;
     private ContactService contactServiceImpl;
+    private PasswordEncoder encoder;
+    private RoleService roleServiceImpl;
     private AppointmentService appointmentServiceImpl;
     private AppointmentAttachmentService appointmentAttachmentServiceImpl;
     private AppointmentAttendeeService appointmentAttendeeServiceImpl;
@@ -36,7 +39,9 @@ public class DataLoader implements CommandLineRunner {
                       ContactService contactServiceImpl,
                       AppointmentService appointmentServiceImpl,
                       AppointmentAttachmentService appointmentAttachmentServiceImpl,
-                      AppointmentAttendeeService appointmentAttendeeServiceImpl) {
+                      AppointmentAttendeeService appointmentAttendeeServiceImpl,
+                      PasswordEncoder encoder,
+                      RoleService roleServiceImpl) {
 
         this.unitTypeServiceImpl = unitTypeServiceImpl;
         this.subUnitTypeServiceImpl = subUnitTypeServiceImpl;
@@ -45,6 +50,8 @@ public class DataLoader implements CommandLineRunner {
         this.appointmentServiceImpl = appointmentServiceImpl;
         this.appointmentAttachmentServiceImpl = appointmentAttachmentServiceImpl;
         this.appointmentAttendeeServiceImpl = appointmentAttendeeServiceImpl;
+        this.encoder = encoder;
+        this.roleServiceImpl = roleServiceImpl;
     }
 
     @Override
@@ -125,22 +132,46 @@ public class DataLoader implements CommandLineRunner {
 
         contactServiceImpl.save(contactTwo);
 
-        SystemUser user =
+        HashSet<Role> users = new HashSet<>();
+        HashSet<Role> admins = new HashSet<>();
+        Role adminRole = Role.builder().roleName(ERole.ROLE_ADMIN).build();
+        Role userRole = Role.builder().roleName(ERole.ROLE_USER).build();
+        admins.add(roleServiceImpl.save(adminRole));
+        users.add(roleServiceImpl.save(userRole));
+
+        SystemUser saad =
                 SystemUser
                         .builder()
                         .active(true)
                         .currentView("month")
                         .lastViewOwnerId(1l)
                         .username("msaad")
-                        .password("qwerty".chars().mapToObj(c -> (char) c).toArray(Character[]::new))
+                        .password(encoder.encode("qwerty"))
                         .phoneNumber("01096942732")
                         .name("saad")
                         .emailAddress("m.saad@gmail.com")
                         .contact(contactOne)
                         .unitType(unitType)
                         .subUnitType(subUnitTypeOne)
+                        .roles(users)
                         .build();
 
-        systemUserServiceImpl.save(user);
+        systemUserServiceImpl.save(saad);
+
+        SystemUser admin =
+                SystemUser
+                        .builder()
+                        .active(true)
+                        .username("admin")
+                        .password(encoder.encode("a"))
+                        .name("admin")
+                        .emailAddress("admin.dummy@gmail.com")
+                        .contact(contactTwo)
+                        .unitType(unitType)
+                        .subUnitType(subUnitTypeTwo)
+                        .roles(admins)
+                        .build();
+
+        systemUserServiceImpl.save(admin);
     }
 }

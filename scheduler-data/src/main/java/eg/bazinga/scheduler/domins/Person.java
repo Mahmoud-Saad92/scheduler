@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 @MappedSuperclass
@@ -16,6 +19,9 @@ public class Person extends BaseEntity {
     @Column(name = "NAME")
     private String name;
 
+    @NotBlank
+    @Size(max = 50)
+    @Email
     @Column(name = "EMAIL_ADDRESS")
     private String emailAddress;
 

@@ -46,4 +46,14 @@ public class SystemUserServiceImpl implements SystemUserService {
     public void deleteById(Long id) {
         systemUserRepository.deleteById(id);
     }
+
+    @Override
+    public Boolean existsByUsername(String username) {
+        return systemUserRepository.existsByUsername(username);
+    }
+
+    @Override
+    public Boolean existsByEmail(String email) {
+        return systemUserRepository.existsByEmailAddress(email);
+    }
 }

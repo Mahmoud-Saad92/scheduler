@@ -4,4 +4,8 @@ import eg.bazinga.scheduler.domins.SystemUser;
 import eg.bazinga.scheduler.services.GenericService;
 
 public interface SystemUserService extends GenericService<SystemUser, Long> {
+
+    Boolean existsByUsername(String username);
+
+    Boolean existsByEmail(String email);
 }

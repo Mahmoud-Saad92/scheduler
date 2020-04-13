@@ -1,9 +1,9 @@
 package eg.bazinga.scheduler.repositories;
 
 import eg.bazinga.scheduler.domins.AppointmentAttachment;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AppointmentAttachmentRepository extends CrudRepository<AppointmentAttachment, Long> {
+public interface AppointmentAttachmentRepository extends JpaRepository<AppointmentAttachment, Long> {
 }
