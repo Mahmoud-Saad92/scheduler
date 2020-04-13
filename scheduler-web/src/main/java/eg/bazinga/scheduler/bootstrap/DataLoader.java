@@ -6,7 +6,11 @@ import eg.bazinga.scheduler.domins.SystemUser;
 import eg.bazinga.scheduler.domins.UnitType;
 import eg.bazinga.scheduler.domins.enums.ContactType;
 import eg.bazinga.scheduler.domins.enums.Type;
+import eg.bazinga.scheduler.services.appointment.AppointmentService;
+import eg.bazinga.scheduler.services.appointment.attachment.AppointmentAttachmentService;
+import eg.bazinga.scheduler.services.appointment.attendee.AppointmentAttendeeService;
 import eg.bazinga.scheduler.services.contact.ContactService;
+import eg.bazinga.scheduler.services.sub.unit.type.SubUnitTypeService;
 import eg.bazinga.scheduler.services.unit.type.UnitTypeService;
 import eg.bazinga.scheduler.services.user.SystemUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,96 +18,128 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class DataLoader implements CommandLineRunner {
 
     private UnitTypeService unitTypeServiceImpl;
+    private SubUnitTypeService subUnitTypeServiceImpl;
     private SystemUserService systemUserServiceImpl;
     private ContactService contactServiceImpl;
+    private AppointmentService appointmentServiceImpl;
+    private AppointmentAttachmentService appointmentAttachmentServiceImpl;
+    private AppointmentAttendeeService appointmentAttendeeServiceImpl;
 
     @Autowired
     public DataLoader(UnitTypeService unitTypeServiceImpl,
-                      SystemUserService systemUserServiceImpl,
-                      ContactService contactServiceImpl) {
-        
+                      SubUnitTypeService subUnitTypeServiceImpl, SystemUserService systemUserServiceImpl,
+                      ContactService contactServiceImpl,
+                      AppointmentService appointmentServiceImpl,
+                      AppointmentAttachmentService appointmentAttachmentServiceImpl,
+                      AppointmentAttendeeService appointmentAttendeeServiceImpl) {
+
         this.unitTypeServiceImpl = unitTypeServiceImpl;
+        this.subUnitTypeServiceImpl = subUnitTypeServiceImpl;
         this.systemUserServiceImpl = systemUserServiceImpl;
         this.contactServiceImpl = contactServiceImpl;
+        this.appointmentServiceImpl = appointmentServiceImpl;
+        this.appointmentAttachmentServiceImpl = appointmentAttachmentServiceImpl;
+        this.appointmentAttendeeServiceImpl = appointmentAttendeeServiceImpl;
     }
 
     @Override
     public void run(String... args) throws Exception {
         if (unitTypeServiceImpl.findAll().isEmpty()) {
-            initUnitTypes ();
+            initUnitTypes();
         }
     }
 
     @Transactional
-    public void initUnitTypes () {
-        UnitType unitType = new UnitType();
-        unitType.setName("IT");
-        unitType.setActive(true);
-        unitType.setType(Type.PARENT);
-        
-        SubUnitType subUnitTypeOne = new SubUnitType();
-        subUnitTypeOne.setUnitType(unitType);
-        subUnitTypeOne.setName("SUPPORT");
-        subUnitTypeOne.setActive(true);
-        subUnitTypeOne.setType(Type.CHILD);
+    public void initUnitTypes() {
 
-        SubUnitType subUnitTypeTwo = new SubUnitType();
-        subUnitTypeTwo.setUnitType(unitType);
-        subUnitTypeTwo.setName("RND");
-        subUnitTypeTwo.setActive(true);
-        subUnitTypeTwo.setType(Type.CHILD);
-
-        Set<SubUnitType> subUnitTypes = new HashSet<>();
-        subUnitTypes.add(subUnitTypeOne);
-        subUnitTypes.add(subUnitTypeTwo);
-
-        unitType.setSubUnitTypes(subUnitTypes);
+        UnitType unitType =
+                UnitType
+                        .builder()
+                        .type(Type.PARENT)
+                        .active(true)
+                        .name("IT")
+                        .build();
 
         unitTypeServiceImpl.save(unitType);
 
-        Contact contactOne = new Contact();
-        contactOne.setContactType(ContactType.INTERNAL);
-        contactOne.setJobTitle("Developer");
-        contactOne.setName("Mahmoud");
-        contactOne.setActive(true);
-        contactOne.setEmailAddress("m.saad@gmail.com");
-        contactOne.setPhoneNumber("01096942732");
-        contactOne.setUnitType(unitType);
-        contactOne.setSubUnitType(subUnitTypeTwo);
-        
+        SubUnitType subUnitTypeOne =
+                SubUnitType
+                        .builder()
+                        .active(true)
+                        .name("RND")
+                        .type(Type.CHILD)
+                        .unitType(unitType)
+                        .build();
+
+        subUnitTypeServiceImpl.save(subUnitTypeOne);
+
+        SubUnitType subUnitTypeTwo =
+                SubUnitType
+                        .builder()
+                        .active(true)
+                        .name("SUPPORT")
+                        .type(Type.CHILD)
+                        .unitType(unitType)
+                        .build();
+
+        subUnitTypeServiceImpl.save(subUnitTypeTwo);
+
+        unitType.getSubUnitTypes().forEach(subUnitType -> {
+            System.out.println(subUnitType.getName());
+        });
+
+        unitTypeServiceImpl.save(unitType);
+
+        Contact contactOne =
+                Contact
+                        .builder()
+                        .contactType(ContactType.INTERNAL)
+                        .active(true)
+                        .jobTitle("Developer")
+                        .name("Mahmoud")
+                        .emailAddress("m.saad@gmail.com")
+                        .unitType(unitType)
+                        .subUnitType(subUnitTypeOne)
+                        .phoneNumber("01096942732")
+                        .build();
+
         contactServiceImpl.save(contactOne);
 
-        Contact contactTwo = new Contact();
-        contactTwo.setContactType(ContactType.EXTERNAL);
-        contactTwo.setJobTitle("Developer");
-        contactTwo.setName("Hassan");
-        contactTwo.setActive(false);
-        contactTwo.setEmailAddress("s.hassan@gmail.com");
-        contactTwo.setPhoneNumber("010853717432");
-        contactTwo.setUnitType(unitType);
-        contactTwo.setSubUnitType(subUnitTypeOne);
+        Contact contactTwo =
+                Contact
+                        .builder()
+                        .contactType(ContactType.EXTERNAL)
+                        .active(false)
+                        .jobTitle("System Admin")
+                        .name("Hassan")
+                        .emailAddress("s.hassan@gmail.com")
+                        .unitType(unitType)
+                        .subUnitType(subUnitTypeTwo)
+                        .phoneNumber("010853717432")
+                        .build();
 
         contactServiceImpl.save(contactTwo);
 
-        SystemUser user = new SystemUser();
-        user.setCurrentView("month");
-        user.setLastViewOwnerId(1l);
-        user.setUsername("msaad");
-        user.setPassword("qwerty".toCharArray());
-        user.setContact(contactOne);
-        user.setActive(true);
-        user.setName("Mahmoud");
-        user.setPhoneNumber("01096942732");
-        user.setEmailAddress("m.saad@gmail.com");
-        user.setUnitType(unitType);
-        user.setSubUnitType(subUnitTypeTwo);
+        SystemUser user =
+                SystemUser
+                        .builder()
+                        .active(true)
+                        .currentView("month")
+                        .lastViewOwnerId(1l)
+                        .username("msaad")
+                        .password("qwerty".chars().mapToObj(c -> (char) c).toArray(Character[]::new))
+                        .phoneNumber("01096942732")
+                        .name("saad")
+                        .emailAddress("m.saad@gmail.com")
+                        .contact(contactOne)
+                        .unitType(unitType)
+                        .subUnitType(subUnitTypeOne)
+                        .build();
 
         systemUserServiceImpl.save(user);
     }

@@ -6,6 +6,7 @@
     <modules>
         <module>scheduler-web</module>
         <module>scheduler-data</module>
+        <module>scheduler-security</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>

@@ -1,6 +1,8 @@
 package eg.bazinga.scheduler.domins;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Column;
@@ -11,6 +13,7 @@ import java.util.Objects;
 @Embeddable
 @Getter
 @Setter
+@NoArgsConstructor
 public class AppointmentAttendeeKey implements Serializable {
 
     @Column(name = "APPOINTMENT_ID")
@@ -18,6 +21,12 @@ public class AppointmentAttendeeKey implements Serializable {
 
     @Column(name = "CONTACT_ID")
     private Long contactId;
+
+    @Builder
+    public AppointmentAttendeeKey(Long appointmentId, Long contactId) {
+        this.appointmentId = appointmentId;
+        this.contactId = contactId;
+    }
 
     @Override
     public boolean equals(Object o) {
